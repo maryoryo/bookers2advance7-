@@ -1,0 +1,66 @@
+
+<div class="text-center">
+  <% if user_signed_in? %>
+    <%= form_tag(search_path, method: :get) do %>
+    <%= text_field_tag (:word) %>
+    <%= select_tag 'range' ,options_for_select([['User', '1'], ['Book', '2']]) %>
+    <%= select_tag 'search', options_for_select([["前方一致","forward_match"], ["後方一致","backward_match"], ["完全一致","perfect_match"], ["部分一致","partial_match"]]) %>
+  　<%= submit_tag "検索" %>
+    <% end %>
+  <% end %>
+</div>
+
+<% if @range == '2' %>
+  <h2>Books serch for "<%= @word %>"</h2>
+<% else %>
+  <h2>Users serch for "<%= @word %>"</h2>
+<% end %>
+
+
+
+  
+  <table class="table table-hover table-inverse">
+  <% if @range == '2' %>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Title</th>
+        <th>Opinion</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @book.each do |book| %>
+      <tr>
+        <td>
+          <%= link_to(book.user) do %>
+         <%= attachment_image_tag(book.user, :profile_image, :fill, 50, 50, fallback: "no-image-mini.jpg") %>
+         <% end %>
+        </td>
+        <td>
+         <%= link_to book.title, book, class: "book_#{book.id}" %> 
+        </td>
+        <td><%= book.body %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  <% else %>
+    <thead>
+      <tr>
+        <th>image</th>
+        <th>name</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @user.each do |user| %>
+      <tr>
+        <td><%= attachment_image_tag(user, :profile_image, :fill, 50, 50, fallback: "no-image-mini.jpg") %></td>
+        <td><%= user.name%></td>
+        <td><%= link_to "Show", user, class: "user_#{user.id}" %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  <% end %>
+  </table>
+  
