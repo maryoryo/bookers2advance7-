@@ -7,23 +7,30 @@
       <%= render 'books/form', book: @book_new %>
     </div>
     <div class='col-md-8 offset-md-1'>
-  		<h2>Book detail</h2>
-  		<table class='table'>
-  		  <tr>
-  		    <td><%= link_to user_path(@book.user) do %>
+      
+      <% if user_signed_in? %>
+        <%= form_tag(search_path, method: :get) do %>
+        <%= text_field_tag (:word) %>
+        <%= select_tag 'range' ,options_for_select([['User', '1'], ['Book', '2']]) %>
+        <%= select_tag 'search', options_for_select([["前方一致","forward_match"], ["後方一致","backward_match"], ["完全一致","perfect_match"], ["部分一致","partial_match"]]) %>
+      　<%= submit_tag "検索" %>
+      　<% end %>
+      <% end %>
+      
+      <h2>Book detail</h2>
+      <table class='table'>
+        <tr>
+          <td><%= link_to user_path(@book.user) do %>
             <%= attachment_image_tag(@book.user, :profile_image, :fill, 100, 100, fallback: "no-image-icon.jpg") %><br>
             <%= @book.user.name %>
             <% end %>
           </td>
           <td><%= link_to @book.title, book_path(@book) %></td>
           <td><%= @book.body %></td>
-          
           <% if @book_user.id == current_user.id %>
           <td><%= link_to 'Edit', edit_book_path(@book), class: "btn btn-sm btn-success edit_book_#{@book.id}" %></td>
           <td><%= link_to 'Destroy', book_path(@book), method: :delete, data: { confirm: '本当に消しますか？' }, class: "btn btn-sm btn-danger destroy_book_#{@book.id}"%></td>
           <% end %>
-          
-          
           <td>
             <% if @book.favorited_by?(current_user) %>
               <p>
