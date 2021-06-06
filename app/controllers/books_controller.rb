@@ -4,10 +4,13 @@ class BooksController < ApplicationController
 
   def show
     @book = Book.find(params[:id])
+    # impressionist(@book, nil, unique: [:session_hash])
     @book_new = Book.new
     @book_user = @book.user
     @book_comment = BookComment.new
-    
+    impressionist(@book, unique: [:ip_address])
+    # impressionist(@book_user, nil, :unique => [:session_hash])
+    # ←詳細ページにいくとPV数が1つ増える
   end
 
   def index
